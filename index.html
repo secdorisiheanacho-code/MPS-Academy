@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MPS Academy</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h1>MPS Academy</h1>
+  <ul id="courses">Loading...</ul>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script>
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function loadCourses() {
+      const { data, error } = await db.from("courses").select("title, description");
+      const list = document.getElementById("courses");
+      if (error) { list.textContent = "Error: " + error.message; return; }
+      list.innerHTML = data.map(c => `<li><b>${c.title}</b>: ${c.description}</li>`).join("");
+    }
+    loadCourses();
+  </script>
+</body>
+</html>
