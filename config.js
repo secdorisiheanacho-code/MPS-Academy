@@ -1,3 +1,2 @@
-// Paste your values from Supabase: Project Settings -> API
-const SUPABASE_URL = "PASTE_PROJECT_URL_HERE";
-const SUPABASE_KEY = "PASTE_ANON_KEY_HERE";
+const SUPABASE_URL = "https://ojhnoimlxkgtasimpemy.supabase.co";
+const SUPABASE_KEY = "sb_publishable_jWvPV4yJu-o1b9M9GYjSaA_EDDCDANK";
