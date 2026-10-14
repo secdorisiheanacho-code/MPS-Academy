@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MPS Academy - Sign in</title>
+<link rel="stylesheet" href="css/style.css">
+<style>input,button{width:100%;padding:12px;margin:6px 0;font-size:1rem}</style>
+</head><body>
+<h1>MPS Academy</h1>
+<h2 id="title">Log in</h2>
+<input id="name" placeholder="Your name" style="display:none">
+<input id="email" type="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password (6+ characters)">
+<button id="go">Log in</button>
+<p id="msg"></p>
+<p><a href="#" id="toggle">New here? Create an account</a></p>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script>
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let signup = false;
+const $ = id => document.getElementById(id);
+$("toggle").onclick = e => {
+  e.preventDefault(); signup = !signup;
+  $("title").textContent = signup ? "Create your account" : "Log in";
+  $("go").textContent = signup ? "Sign up" : "Log in";
+  $("name").style.display = signup ? "block" : "none";
+  $("toggle").textContent = signup ? "Have an account? Log in" : "New here? Create an account";
+};
+$("go").onclick = async () => {
+  const email = $("email").value.trim(), password = $("password").value;
+  $("msg").textContent = "Please wait...";
+  let res;
+  if (signup) {
+    res = await db.auth.signUp({ email, password, options: { data: { name: $("name").value.trim() } } });
+  } else {
+    res = await db.auth.signInWithPassword({ email, password });
+  }
+  if (res.error) { $("msg").textContent = res.error.message; return; }
+  if (res.data.session) location.href = "dashboard.html";
+  else $("msg").textContent = "Check your email to confirm your account.";
+};
+</script></body></html>
