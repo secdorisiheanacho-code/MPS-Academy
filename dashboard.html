@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MPS Academy - Dashboard</title>
+<link rel="stylesheet" href="css/style.css">
+<style>button{padding:10px 16px;font-size:1rem}</style>
+</head><body>
+<h1>MPS Academy</h1>
+<h2 id="welcome">Loading...</h2>
+<h3>Courses</h3>
+<ul id="courses"></ul>
+<button id="logout">Log out</button>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script>
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+(async () => {
+  const { data: { session } } = await db.auth.getSession();
+  if (!session) { location.href = "auth.html"; return; }
+  const { data: p } = await db.from("profiles").select("name").single();
+  document.getElementById("welcome").textContent = "Welcome, " + (p?.name || "learner");
+  const { data: c } = await db.from("courses").select("title, description");
+  document.getElementById("courses").innerHTML =
+    c.map(x => `<li><b>${x.title}</b>: ${x.description}</li>`).join("");
+})();
+document.getElementById("logout").onclick = async () => {
+  await db.auth.signOut(); location.href = "auth.html";
+};
+</script></body></html>
